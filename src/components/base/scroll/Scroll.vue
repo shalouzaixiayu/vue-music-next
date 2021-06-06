@@ -9,7 +9,6 @@ import useScroll from './use-scroll.js';
 import {ref, defineProps, defineEmit, useContext}  from 'vue'
 
 const props = defineProps({
-  click:Boolean,
   probeType:Number
 })
 

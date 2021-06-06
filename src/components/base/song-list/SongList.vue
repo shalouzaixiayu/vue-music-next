@@ -2,7 +2,7 @@
   <!-- 封装歌手相关歌曲列表  -->
   <Scroll class="warpper" :probeType="2" @onScroll="onScroll">
     <ul class="list">
-      <li v-for="(item, index) in songList" :key="index" class="index">
+      <li v-for="(item, index) in songList" :key="index" class="index" @click="selectSong(index)">
         <img v-lazy="item.pic" />
         <span class="name">{{ item.name }}</span>
       </li>
@@ -16,9 +16,13 @@ import { defineProps, defineEmit } from "vue";
 const props = defineProps({
   songList: Array,
 });
-const emits = defineEmit(['onScroll'])
+const emits = defineEmit(['onScroll', 'selectSongItem'])
 function onScroll(y){
   emits('onScroll', y)
+}
+// 提交vuex请求
+function selectSong(index){
+  emits('selectSongItem', {item:props.songList, index})
 }
 </script>
 

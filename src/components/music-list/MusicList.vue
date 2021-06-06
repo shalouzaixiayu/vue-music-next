@@ -7,7 +7,19 @@
     <div class="attr" :style="attrStyle.class">
       <div :style="headStyle"></div>
     </div>
-    <SongList :songList="obj.res" @onScroll="onScroll"></SongList>
+    <!-- 随机播放按钮 -->
+    <div class="randomClass">
+      <div class="content" @click="randomPlay" v-show="obj.res.length >= 1">
+        <i class="icon-play"></i>
+        <span>随 机 播 放 歌 曲</span>
+      </div>
+    </div>
+
+    <SongList
+      :songList="obj.res"
+      @onScroll="onScroll"
+      @selectSongItem="selectSongItem"
+    ></SongList>
   </div>
 </template>
 
@@ -17,6 +29,9 @@ import { useRouter, useRoute } from "vue-router";
 import { reactive, watch, computed, onMounted, ref, nextTick } from "vue";
 import { getSingerDetail } from "../../network/getSingerList.js";
 import { processSong } from "../../network/getSong.js";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -37,49 +52,53 @@ watch(
   }
 );
 
-
 const headStyle = computed(() => {
-  return `background: url('${obj.res[0].pic}'); background-size: cover;`;
+  return `background: url('${obj.res[2].pic}'); background-size: cover;`;
 });
+
+
+// 发送vuex请求
+function selectSongItem({ item, index }) {
+  store.dispatch("setPlay", { item, index });
+}
+
+function randomPlay(){
+  store.dispatch('setRandomPlay', obj.res)
+}
 
 // 头像样式
 const attrStyle = reactive({
   class: {},
 });
 
+
 function onScroll(y) {
   let scale = 1;
   let blur = 0;
-  let transition = 'all  .1s';
+  let transition = "all  .1s";
 
   if (y > 0) {
     scale -= Math.abs(y / 250);
     scale = Math.max(1, scale);
     blur = Math.abs(y / 250) * 10;
   } else {
-    blur = 0
+    blur = 0;
     scale += Math.abs(y / 250);
-    scale = Math.min(1.8, scale)
+    scale = Math.min(1.8, scale);
   }
 
   attrStyle.class = {
     transition,
     transform: `scale(${scale})`,
     filter: `blur(${blur}px)`,
-    opacity: .9,
-  }
+    opacity: 0.9,
+  };
 }
 
 function back() {
-  router.push({
-    path:'/singer'
-  });
+  router.go(-1);
 }
-
-
 </script>
-
-
 
 <style lang="scss" scoped>
 .detailList {
@@ -90,6 +109,30 @@ function back() {
   width: 100%;
   z-index: 10;
   background-color: rgba(34, 34, 34, 0.9);
+  .randomClass {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 35%;
+    width: 100%;
+    background-color: rgba(1, 1, 1, .2);
+    .content {
+      width: 200px;
+      margin: 0 auto;
+      border: 1px solid $color-theme;
+      padding: 10px;
+      border-radius: 20px;
+      color: $color-theme;
+      span {
+        display: inline-block;
+        margin-left: 40px;
+        transform: translate(0, -2px);
+        opacity: 0.8;
+        font-size: $font-size-medium;
+        
+      }
+    }
+  }
   .back {
     position: fixed;
     top: 0;

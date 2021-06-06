@@ -18,6 +18,7 @@ export default function useScroll(wrapper, options, emit) {
     const s = scroll.value = new BScroll(wrapper.value, {
       observeDOM: true,
       observeImage: true, // 开启 observe-image 插件
+      click:true,
       ...options
     })
 

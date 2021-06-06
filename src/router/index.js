@@ -1,6 +1,6 @@
 import {
   createRouter,
-  createWebHistory
+  createWebHistory,
 } from 'vue-router'
 
 const SingerDetail = () => import('/src/views/SingerDetail.vue')
